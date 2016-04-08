@@ -20,7 +20,7 @@ Note that [programe name] is a place holder that can be replaced with any name y
   - The first line is number of nodes n
   - Starting from the second line: 
   Assume u denotes a node id and d denotes its degree, the format of neighborhood representation format is :
-  u,d:v_1:v_2:...:v_d. And also v_1, v_2, ..., $v_d$ are in an order.
+  u,d:v_1:v_2:...:v_d. And also v_1, v_2, ..., v_d are in an order.
   - Each node id is an integer or long withine the range [0,n-1], where n is number of nodes
   - Each node is sorted by its id, that is, line (i+2) is for node with id i (i=0 to n-1).
   
