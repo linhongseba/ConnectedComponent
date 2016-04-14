@@ -57,6 +57,10 @@ int ConnectedComp(Node *G, int n){
 	return ccnum;
 }
 int main(int argc, char *argv[]){
+	if(argc<2){
+		printf("Usage: %s [input_graph_file] [output_file]\n", argv[0]);
+		exit(0);
+	}
 	Initmemory();
 	InitIOmemory();
 	FILE *rfile;
@@ -84,10 +88,7 @@ int main(int argc, char *argv[]){
 	memset(ccid,0,sizeof(int)*n);
 	isvisited=new char[n];
 	int ccnum=ConnectedComp(G, n);
-	char *outfile=new char[5000];
-	strcpy(outfile,argv[1]);
-	strcat(outfile,"_cc.txt");
-	FILE *wfile=fopen(outfile,"w");
+	FILE *wfile=fopen(argv[2],"w");
 	if(wfile==NULL){
 		printf("could not open file to write\n");
 		exit(3);
