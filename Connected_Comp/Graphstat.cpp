@@ -1,4 +1,12 @@
 #include"IOfunction.h"
+/*
+A simple implementation for the connected componennt algorithm
+@author: Linhong Zhu (linhong.seba.zhu@gmail.com)
+@last_update_time: April 14, 2016
+@bug report: please create issues in GitHub.
+copyright 1.0 Linhong Zhu
+under Apache 2.0 licence
+*/
 char *isvisited;
 int *visitstack;
 int *ccid;
