@@ -3,9 +3,12 @@
 #include"function.h"
 #include"memoryfunction.h"
 /*
-This file implements the IO functions which read/write graph and community files
+This file implements the IO functions which read/write graph files
 
 /*@author: linhong (linhong.seba.zhu@gmail.com)
+@bug report: please create issues in GitHub
+@ last update: July, 2015
+
 */
 ///----------------------------------------------------------------------//
 
