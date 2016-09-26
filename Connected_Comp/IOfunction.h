@@ -4,9 +4,12 @@
 #include"function.h"
 #include"memoryfunction.h"
 /*
-This file implements the IO functions which read/write graph and community files
+This file implements the IO functions which read/write graph files
 
 /*@author: linhong (linhong.seba.zhu@gmail.com)
+@bug report: please create issues in GitHub
+@ last update: July, 2015
+
 */
 ///----------------------------------------------------------------------//
 //==================================================================================
@@ -290,6 +293,7 @@ inline void PrintGraph(Node *G, int n){
 		printf("\n");
 	}
 }
+<<<<<<< HEAD
 
 inline void ReadWeightGraph(Node *&G, int nodenum,FILE *inFile){
 	int i=0;
@@ -422,3 +426,6 @@ inline void Readnames(ifstream &fin, vector<string> &names){
 	}
 }
 #endif
+=======
+#endif
+>>>>>>> origin/master

@@ -9,11 +9,24 @@ A simple In-memory implementation for finding connected component in undirected 
 ##Compile and Installation
 In order to compile, we need the g++ compiler pre-installed. With g++ comiler, just type:
 
-``g++ Graphstat.cpp -O3 -o [programe name]``,
+``g++ Graphstat.cpp -O3 -o [programe-name]``,
+
 
 
 it will automatically generate an executable program with name ``programe name". 
-Note that [programe name] is a place holder that can be replaced with any name you want
+Note that [programe-name] is a place holder that can be replaced with any name you want.
+
+As an example, if we type g++ Graphstat.cpp -O3 -o connectedcomp, it will generate an executable program with name connectedcomp.
+
+To execute the program, type:
+[programe-name] [input-graph-file-name] [output-graph-file-name]
+
+The format of input graph file, is specified as follows.
+
+As an example, we could type
+./connectedcomp EG.txt EG.txt_cc.txt
+
+It will compute the connected component of the graph specified in [EG.txt](https://github.com/linhongseba/ConnectedComponent/blob/master/Connected_Comp/EG.txt) and output results into EG.txt_cc.txt(https://github.com/linhongseba/ConnectedComponent/blob/master/Connected_Comp/EG.txt_cc.txt).
 
 ## Input Format
 
@@ -50,6 +63,7 @@ Note that [programe name] is a place holder that can be replaced with any name y
     
     9,1:3
     
+More examples of input are available [here](https://github.com/linhongseba/ConnectedComponent/blob/master/Connected_Comp/EG.txt)
 ## Output Format
 Each line contains two integers that are separated by ''\t", where the first integer is the id of nodes, 
 and the second integer is the id of connected components.
