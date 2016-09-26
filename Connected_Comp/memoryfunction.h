@@ -33,7 +33,7 @@ inline void InitIOmemory(){
 	////////////////////////////////////////////////////////////
 	///////////initializing IO memory block (START)/////////////
 	///////////////////////////////////////////////////////////
-	BYTE_TO_READ = 60000000;
+	BYTE_TO_READ = 67108864;
 	inputbuffer = new char[BYTE_TO_READ];
 	outputbuffer = new char[BYTE_TO_READ];
 	outcurpos = outputbuffer;
@@ -181,123 +181,8 @@ void inline allocatepermemory(unsigned int size){
 		}
 }
 
-/*
- insert (index,v) into position pos at row into a m-dimension sparse matrix, usually m is very small <100
- */
-inline void insert(Row &rowvector, int pos, int index, double v, int m){
-    if (rowvector.clength >= rowvector.size){
-        rowvector.size=m;
-        unsigned int mysize = sizeof(double)*rowvector.size;
-        mysize += (sizeof(double)*rowvector.size);
-        allocatetmpmemory(mysize);
-        double *newweight = (double*)curMemPos;
-        curMemPos += (sizeof(double)*rowvector.size);
-        int *newidx = (int*)curMemPos;
-        curMemPos += (sizeof(int)*rowvector.size);
-        if (rowvector.clength > 0){
-            memcpy(newweight, rowvector.weight, sizeof(double)*rowvector.clength);
-            memcpy(newidx, rowvector.idx, sizeof(int)*rowvector.clength);
-        }
-        rowvector.weight = newweight;
-        rowvector.idx = newidx;
-    }
-    int k = 0;
-    for (k = rowvector.clength; k > pos; k--){
-        rowvector.idx[k] = rowvector.idx[k - 1];
-        rowvector.weight[k] = rowvector.weight[k - 1];
-    }
-    rowvector.idx[pos] = index;
-    rowvector.weight[pos] = v;
-    rowvector.clength++;
-}
 
-/*
-insert (index,v) into position pos at row in sparse matrix 
-*/
-inline void insert(Row &rowvector, int pos, int index, double v){
-	if (rowvector.clength >= rowvector.size){
-		if (rowvector.size*sizeof(double) >= BLK_SZ2){
 
-			double *tempdre = (double*)realloc(rowvector.weight, sizeof(double)*(rowvector.size + 10));
-			int *tempire= (int*)realloc(rowvector.idx, sizeof(int)*(rowvector.size + 10));
-			if (tempdre == NULL || tempire == NULL){
-				printf("could not allocate more memory\n");
-				exit(2);
-			}
-			rowvector.weight = tempdre;
-			rowvector.idx = tempire;
-			rowvector.size += 10;
-		}
-		else{
-			if ((rowvector.size + 10)*sizeof(double) >= BLK_SZ2){
-				double *newweight = (double*)malloc(sizeof(double)*(rowvector.size + 10));
-				int *newidx = (int*)malloc(sizeof(int)*(rowvector.size + 10));
-				if (newweight == NULL || newidx == NULL){
-					printf("could not allocate more memory\n");
-					exit(2);
-				}
-				memcpy(newweight, rowvector.weight, sizeof(double)*rowvector.clength);
-				memcpy(newidx, rowvector.idx, sizeof(int)*rowvector.clength);
-				rowvector.weight = newweight;
-				rowvector.idx = newidx;
-				rowvector.size += 10;
-			}
-			else{
-				rowvector.size += 10;
-				unsigned int mysize = sizeof(double)*rowvector.size;
-				mysize += (sizeof(double)*rowvector.size);
-				allocatetmpmemory(mysize);
-				double *newweight = (double*)curMemPos;
-				curMemPos += (sizeof(double)*rowvector.size);
-				int *newidx = (int*)curMemPos;
-				curMemPos += (sizeof(int)*rowvector.size);
-				if (rowvector.clength > 0){
-					memcpy(newweight, rowvector.weight, sizeof(double)*rowvector.clength);
-					memcpy(newidx, rowvector.idx, sizeof(int)*rowvector.clength);
-				}
-				rowvector.weight = newweight;
-				rowvector.idx = newidx;
-			}
-		}
-	}
-	int k = 0;
-	for (k = rowvector.clength; k > pos; k--){
-		rowvector.idx[k] = rowvector.idx[k - 1];
-		rowvector.weight[k] = rowvector.weight[k - 1];
-	}
-	rowvector.idx[pos] = index;
-	rowvector.weight[pos] = v;
-	rowvector.clength++;
-}
-
-/*
-deepcopy, allocate memory to dest,
-copy value from src to dest
-*/
-inline void copyRow(Row &dest, Row &src){
-	dest.size = src.size;
-	dest.clength = src.clength;
-	if (sizeof(double)*dest.size >= BLK_SZ2){
-		dest.weight = (double*)malloc(sizeof(double)*dest.size);
-		dest.idx = (int*)malloc(sizeof(int)*dest.size);
-		if (dest.weight == NULL&&dest.idx == NULL){
-			printf("system could not allocate more memory\n");
-			exit(2);
-		}
-	}
-	else{
-		allocatetmpmemory(sizeof(int)*dest.size);
-		dest.idx = (int *)curMemPos;
-		curMemPos+= (sizeof(int)*dest.size);
-		allocatetmpmemory(sizeof(double)*dest.size);
-		dest.weight = (double*)curMemPos;
-		curMemPos += (sizeof(double)*dest.size);
-	}
-	for (int i = 0; i < dest.clength; i++){
-		dest.weight[i] = src.weight[i];
-		dest.idx[i] = src.idx[i];
-	}
-}
 
 /*
 release graph memory where G is in Node structure

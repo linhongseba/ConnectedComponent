@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #ifndef IOfunction_h_
 #define IOfunction_h_
 #include"function.h"
@@ -8,34 +9,6 @@ This file implements the IO functions which read/write graph and community files
 /*@author: linhong (linhong.seba.zhu@gmail.com)
 */
 ///----------------------------------------------------------------------//
-
-int listfilename(vector<char*> &filenames, char *dirname){
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(dirname)) != NULL) {
-		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
-			if (ent->d_name[0] != '.'){
-				//printf("%s\n", ent->d_name);
-				allocatetmpmemory(sizeof(char) * 500);
-				char *name = (char*)curMemPos;
-				curMemPos += (sizeof(char) * 500);
-				strcpy(name, dirname);
-				strcat(name, "/");
-				strcat(name, ent->d_name);
-				//printf("%s\n", name);
-				filenames.push_back(name);
-			}
-		}
-		closedir(dir);
-		return 0;
-	}
-	else {
-		/* could not open directory */
-		perror("");
-		return EXIT_FAILURE;
-	}
-}
 //==================================================================================
 //////////////////////////////////////////////////////////////////////////////////
 //Each time we read a fixed number of bits into input file buffer (start)
@@ -143,9 +116,9 @@ inline void Parsedeg(int &dv, int nodenum){
 	}
 }
 
-//==============================================================================
-//parse the value of neighbore id and its weight from char *type input buffer
-//==============================================================================
+//===========================================================
+//parse the value of neighbore id from char *type input buffer (START)
+//===========================================================
 inline void Parseneighbor(int &neighbore,int nodenum, int v){
 	++curpos;
 	neighbore = 0;
@@ -158,23 +131,48 @@ inline void Parseneighbor(int &neighbore,int nodenum, int v){
 		exit(1);
 	}
 }
+//===========================================================
+//parse the value of neighbore id from char *type input buffer (END)
+//===========================================================
 
-inline void Replacefile(char *destfilename, char *srcfilename){
-	FILE* source = fopen(srcfilename, "rb");
-	FILE* dest = fopen(destfilename, "wb");
-	if(source!=NULL&&dest!=NULL){
-		size_t size;
-		// clean and more secure
-		// feof(FILE* stream) returns non-zero if the end of file indicator for stream is set
+//========================================================
+//parse the value of neighbore id and its weights from char *type input buffer (START)
+//===========================================================
+inline void Parseweightneighbor(int &neighbore, double &weight, int nodenum, int v){
+	++curpos;
+	neighbore = 0;
+	do{
 
-		while (size = fread(filebuffer, 1, BYTE_TO_READ, source)) {
-			fwrite(filebuffer, 1, size, dest);
-		}
+		neighbore=(10 * neighbore)+int(*curpos)-48;
+	}while(*(++curpos) != ',');
 
-		fclose(source);
-		fclose(dest);
+
+	if(neighbore<0||neighbore>=nodenum){
+		printf("error,please check line %d\n",v);
+		exit(1);
 	}
+	int integer=0;
+	++curpos;
+	while(*curpos > '/' && *curpos < ':'){
+		//	while(*(++curpos) != '.'){
+		integer=(10 * integer)+int(*curpos++)-48;
+	}
+
+	double dp=1;
+	double decimal=0;
+	if(*curpos == '.'){
+		++curpos;
+		while(*curpos > '/' && *curpos < ':'){
+			decimal=(10 * decimal)+int(*curpos++)-48;
+			dp*=10;
+		}
+	}
+	weight = integer + decimal / dp;
 }
+//========================================================
+//parse the value of neighbore id and its weights from char *type input buffer (END)
+//===========================================================
+
 inline void ReadGraph(Node *&G, int nodenum,FILE *inFile){
 	int i=0;
 	int v=0;
@@ -282,6 +280,7 @@ inline void ReadGraph(Node *&G, int nodenum,FILE *inFile){
 
 	}
 }
+
 inline void PrintGraph(Node *G, int n){
 	for(int i=0;i<n;i++){
 		printf("%d\t%d",i,G[i].deg);
@@ -289,6 +288,137 @@ inline void PrintGraph(Node *G, int n){
 			printf(":%d",G[i].nbv[j]);
 		}
 		printf("\n");
+	}
+}
+
+inline void ReadWeightGraph(Node *&G, int nodenum,FILE *inFile){
+	int i=0;
+	int v=0;
+	int dv=0;
+	double weight;
+	int neighbore=0;
+	int j=0;
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//////////scanning the graph again to initializing the S and Splus nodes' adjacent lists(start)
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	G=(Node*)malloc(sizeof(Node)*nodenum);
+	if(G==NULL){
+		printf("system could not allocate more memory\n");
+		exit(2);
+	}
+	for(i=0;i<nodenum;i++){
+		G[i].vid=-1;
+		G[i].deg=0;
+		G[i].nbv=NULL;
+		G[i].weight=NULL;
+	}
+	curpos=endpos0=inputbuffer;	//initialize the data position pointers to the start of the buffer
+	FillInputBuffer(inFile);
+	//starting scanning
+	int pos=0;
+	while(1){
+		Parseid(v);
+		//skip the lines where the format of graph has some problem
+		if(v<0||v>=nodenum){
+			Skipline();
+			if(++curpos >= endpos){
+				if(feof(inFile))
+					break;
+				FillInputBuffer(inFile);
+			}
+			continue;
+		}//end of skip "bad" lines
+		if (pos >= nodenum)
+			break;
+		G[pos].vid=v;
+		dv=0;
+		Parsedeg(dv,nodenum);
+		if(dv>0){
+			/////////////////////////////////////////////////////////////
+			//for each node v,
+			//allocate memory space to store a heap entry (dv,v,nb(v)) (START)
+			///////////////////////////////////////////////////////////
+			if(sizeof(double)*dv>=BLK_SZ2){
+				G[pos].nbv=(int*)malloc(sizeof(int)*dv);
+				G[pos].weight=(double*)malloc(sizeof(double)*dv);
+				if (G[pos].nbv==NULL||G[pos].weight==NULL){
+					printf("System could not allocate more memory\n");
+					exit(2);
+				}
+			}else{
+				allocatetmpmemory(sizeof(int)*dv);
+				G[pos].nbv=(int *)curMemPos;
+				curMemPos+=(sizeof(int)*dv);
+				allocatetmpmemory(sizeof(double)*dv);
+				G[pos].weight=(double*)curMemPos;
+				curMemPos+=(sizeof(double)*dv);
+			}
+
+			/////////////////////////////////////////////////////////////
+			//for each node v,
+			//allocate memory space to store a heap entry (dv,v,nb(v)) (END)
+			///////////////////////////////////////////////////////////
+
+			/////////////////////////////////////////////////////////////////////////
+			//read and initialize the value of neighbore index and weight (START)
+			//////////////////////////////////////////////////////////////////////////
+			j=0;
+			G[pos].deg=0;
+			while(j<dv){
+				Parseweightneighbor(neighbore,weight,nodenum,v);
+				G[pos].nbv[G[pos].deg]=neighbore;
+				G[pos].weight[G[pos].deg]=weight;
+				G[pos].deg++;
+				j++;
+			}
+			/////////////////////////////////////////////////////////////////////////
+			//read and initialize the value of neighbore index and weight (END)
+			//////////////////////////////////////////////////////////////////////////
+			while(*curpos!='\n')
+				curpos++;
+		}//end: if(deg >0)
+		else{
+			G[pos].deg=0;
+			G[pos].nbv=NULL;
+			G[pos].weight=NULL;
+			while(*curpos!='\n')
+				curpos++;
+		}
+		pos++;
+		if(++curpos >= endpos){
+			if(feof(inFile))
+				break;
+			FillInputBuffer(inFile);
+
+		}
+	}//end: while(i)
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//////////scanning the graph again to initializing the S and Splus nodes' adjacent lists(end)
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	rewind(inFile);
+	int rv=fscanf(inFile,"%d\n",&nodenum);
+	if (rv != 1){
+		printf("the format of file is not correct");
+		exit(2);
+
+	}
+}
+inline void Readnames(ifstream &fin, vector<string> &names){
+	if (!fin.good()) {
+		std::cout << "FAILED\n";
+		exit(1);
+	}
+	string temp;
+	getline(fin,temp);//ignore the title line
+	int id;
+	string phone;
+	while(true){
+		if(fin.eof())
+			break;
+		fin >> id;
+		fin >> phone;
+		//cout << id << "\t" << phone << endl;
+		names[id]=phone;
 	}
 }
 #endif

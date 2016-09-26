@@ -8,7 +8,6 @@
 #include <vector>
 #include <math.h>
 #include <fstream>
-#include"dirent.h"
 #define _CRT_SECURE_NO_WARNINGS
 using namespace std;
 /*
@@ -345,11 +344,7 @@ inline int itostring(int value, char *& string, int radix){
 	return length;
 }
 
-//parse a double to string (n is length of string)
-inline int dtostring (double value, char *& valuestring){
-	int n=sprintf(valuestring,"%.8lf", value);
-	return n;
-} 
+
 
 void GraphNorm(Node *&G, int N){
 	for (int i = 0; i < N; i++){
