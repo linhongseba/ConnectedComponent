@@ -1,0 +1,7 @@
+phone3:phone1,0.500000
+phone4
+phone2:phone4,0.500000
+phone1
+phone7:phone6,0.577350:phone5,0.577350
+phone6:phone7,0.577215:phone5,0.577243
+phone5:phone7,0.577350:phone6,0.577350

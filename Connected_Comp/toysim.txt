@@ -1,2 +1,0 @@
-phone1:phone3,0.500000:phone4,0.500000:phone2,0.500000
-phone5:phone7,0.577350:phone6,0.577350

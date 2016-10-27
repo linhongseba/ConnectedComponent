@@ -293,7 +293,6 @@ inline void PrintGraph(Node *G, int n){
 		printf("\n");
 	}
 }
-<<<<<<< HEAD
 
 inline void ReadWeightGraph(Node *&G, int nodenum,FILE *inFile){
 	int i=0;
@@ -426,6 +425,4 @@ inline void Readnames(ifstream &fin, vector<string> &names){
 	}
 }
 #endif
-=======
-#endif
->>>>>>> origin/master
+
