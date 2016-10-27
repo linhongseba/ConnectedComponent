@@ -20,7 +20,7 @@ A simple In-memory implementation for
       As an example, we could type
       ./connectedcomp EG.txt EG.txt_cc.txt
 
-      It will compute the connected component of the graph specified in [EG.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph/EG.txt) and output results into EG.txt_cc.txt(https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph/EG.txt_cc.txt).
+      It will compute the connected component of the graph specified in [EG.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph/EG.txt) and output results into [EG.txt_cc.txt](https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph/EG.txt_cc.txt).
       
    - To executate the random walk program, type:
    
@@ -31,7 +31,7 @@ A simple In-memory implementation for
       As an example, we could type
       ./randomwalk EG3.txt_new.txt name.txt toysim.txt 0.5
       
-      For each node u, it will return the set of nodes that has hightest probability to reach from u. The graph is a weighted graph specified in [EG3.txt_new.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/EG3.txt_new.txt), and the outputs are saved in file toysim.txt (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/toysim.txt).
+      For each node u, it will return the set of nodes that has hightest probability to reach from u. The graph is a weighted graph specified in [EG3.txt_new.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/EG3.txt_new.txt), and the outputs are saved in file [toysim.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/toysim.txt).
 
 ## Input Format
 ### Unweighted Graph (For connected component)
