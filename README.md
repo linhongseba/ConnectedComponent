@@ -1,5 +1,7 @@
-# ConnectedComponent
-A simple In-memory implementation for finding connected component in undirected graphs
+# Connected Component and Random Walk
+A simple In-memory implementation for 
+   - finding connected component in undirected graphs
+   - rooted random walk starting from each node
 # Table of Content
 - [Compile and Installation](#compile-and-installation)
 - [Input Format](#input-format)
@@ -10,6 +12,8 @@ A simple In-memory implementation for finding connected component in undirected 
 In order to compile, we need the g++ compiler pre-installed. With g++ comiler, just type:
 
 ``g++ Graphstat.cpp -O3 -o [programe-name]``,
+
+
 
 
 
