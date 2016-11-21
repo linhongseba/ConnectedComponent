@@ -8,6 +8,9 @@
 #include <vector>
 #include <math.h>
 #include <fstream>
+#include <set>
+#include <sstream>
+#include <map>
 #define _CRT_SECURE_NO_WARNINGS
 using namespace std;
 /*
@@ -360,6 +363,17 @@ void GraphNorm(Node *&G, int N){
 	}
 }
 
+unsigned int JSHash(const string& str)
+{
+	unsigned int hash = 1315423911;
+
+	for (std::size_t i = 0; i < str.length(); i++)
+	{
+		hash ^= ((hash << 5) + str[i] + (hash >> 2));
+	}
+
+	return (hash & 0x7FFFFFFF);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////global function definition (end)////////////////////////////////////////

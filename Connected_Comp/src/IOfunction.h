@@ -1,8 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #ifndef IOfunction_h_
 #define IOfunction_h_
-#include"function.h"
-#include"memoryfunction.h"
+#include "function.h"
+#include "memoryfunction.h"
 /*
 This file implements the IO functions which read/write graph files
 
@@ -423,6 +423,30 @@ inline void Readnames(ifstream &fin, vector<string> &names){
 		//cout << id << "\t" << phone << endl;
 		names[id]=phone;
 	}
+	fin.close();
+}
+inline void Readuris(ifstream &fin, vector<vector<string>> &uris) {
+	if (!fin.good()) {
+		std::cout << "FAILED\n";
+		exit(1);
+	}
+	string temp;
+	getline(fin, temp);//ignore the title line
+	int id;
+	string uri;
+	while (true){
+		if (fin.eof())
+			break;
+		getline(fin, temp);
+		stringstream ss;
+		ss << temp;
+		ss >> id;
+		while (!ss.eof()) {
+			ss >> uri;
+			uris[id].push_back(uri);
+		}
+	}
+	fin.close();
 }
 #endif
 

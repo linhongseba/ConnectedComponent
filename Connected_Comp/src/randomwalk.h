@@ -72,14 +72,14 @@ public:
 	}
 	void Normscore(vector<int> &cand){
 		double max=0;
-		for (int i = 0; i < cand.size(); i++){
+		for (int i = 0; i < (int)cand.size(); i++){
 			int j = cand[i];
 			max += (score[j]*score[j]);
 		}
 		max=sqrt(max);
 		/*if (cand.size()>1)
 			cout << max << endl;*/
-		for (int i = 0; i < cand.size(); i++){
+		for (int i = 0; i < (int) cand.size(); i++){
 			int j = cand[i];
 			score[j]/=max;
 			//cout << score[j] << endl;
@@ -92,7 +92,7 @@ public:
 		int id=ccid[v];
 		for(int i=0;i<iter;i++){
 			copy(score.begin(), score.end(), tempvec.begin());
-			for (int m = 0; m < cand.size(); m++){
+			for (int m = 0; m < (int) cand.size(); m++){
 				int j = cand[m];
 				if (j == v)
 					continue;
@@ -132,15 +132,41 @@ public:
 		}
 		fprintf(wfile,"\n");
 	}
-	void saveresultstring(int v, FILE *wfile, vector<string> &names,vector<int> &cand,double thres){
-		fprintf(wfile,"%s",names[v].c_str());
-		for (int i = 0; i < cand.size(); i++){
+	void saveresultstring(int v, FILE *wfile, vector<string> &names, vector< vector<string> > &uris,vector<int> &cand,double thres){
+		fprintf(wfile, "{\"cluster-id\": \"%ld\", ", JSHash(names[v]));
+		fprintf(wfile,"\"centroid_phone\": \"%s\", ",names[v].c_str());
+		fprintf(wfile, "\"phones\": [");
+		map<string,double> uniqueuri;
+		for (auto &x : uris[v]) {
+			uniqueuri[x] = 1.0;
+		}
+		double maxv = 1.0;
+		for (int i = 0; i < (int) cand.size(); i++){
 			int j = cand[i];
 			if (j != v){
-				if (score[j]>thres)
-					fprintf(wfile, ":%s,%lf", names[j].c_str(), score[j]);
+				if (score[j]>thres) {
+					fprintf(wfile, "{\"name\": \"%s\", \"weight\": %lf}, ", names[j].c_str(), score[j]);
+					for (auto &x : uris[j]) {
+						double old = uniqueuri[x];
+						uniqueuri[x] = (old +score[j]);
+						if (uniqueuri[x] > maxv) {
+							maxv = uniqueuri[x];
+						}
+					}
+				}
 			}
 		}
-		fprintf(wfile,"\n");
+		fprintf(wfile, "{\"name\": \"%s\", \"weight\": %lf}], ", names[v].c_str(), 1.0);
+		fprintf(wfile, "\"CDRIDs\": [");
+		map<string,double>::iterator iter;
+		for (iter = uniqueuri.begin(); iter != uniqueuri.end(); iter++) {
+			if (iter != uniqueuri.end() && (iter == --uniqueuri.end())) {
+				fprintf(wfile, "{\"uri\": \"%s\", \"weight\": %lf}]", iter->first.c_str(), iter->second/maxv);
+			}
+			else {
+				fprintf(wfile, "{\"uri\": \"%s\", \"weight\": %lf}, ", iter->first.c_str(), iter->second/maxv);
+			}
+		}
+		fprintf(wfile,"}\n");
 	}
 };
