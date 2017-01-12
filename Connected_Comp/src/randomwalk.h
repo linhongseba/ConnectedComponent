@@ -85,11 +85,13 @@ public:
 			//cout << score[j] << endl;
 		}
 	}
+	void setScore (int v) {
+		score[v] = 1.0;
+	}
 	void RootRW(int v, int iter, vector<int> &cand){
 		if (cand.size() <= 1)
 			return;
 		score[v]=1.0;
-		int id=ccid[v];
 		for(int i=0;i<iter;i++){
 			copy(score.begin(), score.end(), tempvec.begin());
 			for (int m = 0; m < (int) cand.size(); m++){
@@ -133,7 +135,7 @@ public:
 		fprintf(wfile,"\n");
 	}
 	void saveresultstring(int v, FILE *wfile, vector<string> &names, vector< vector<string> > &uris,vector<int> &cand,double thres){
-		fprintf(wfile, "{\"cluster-id\": \"%ld\", ", JSHash(names[v]));
+		fprintf(wfile, "{\"cluster-id\": \"%d\", ", JSHash(names[v]));
 		fprintf(wfile,"\"centroid_phone\": \"%s\", ",names[v].c_str());
 		fprintf(wfile, "\"phones\": [");
 		map<string,double> uniqueuri;

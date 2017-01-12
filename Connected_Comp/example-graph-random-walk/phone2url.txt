@@ -1,0 +1,8 @@
+phoneId	uri_lists
+0	uri1	uri2	uri4
+1	uri2	uri5
+2	uri4	uri7
+3	uri5
+4	uri6	uri8	uri9
+5	uri8
+6	uri9

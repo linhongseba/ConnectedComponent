@@ -425,7 +425,7 @@ inline void Readnames(ifstream &fin, vector<string> &names){
 	}
 	fin.close();
 }
-inline void Readuris(ifstream &fin, vector<vector<string>> &uris) {
+inline void Readuris(ifstream &fin, vector< vector < string > > &uris) {
 	if (!fin.good()) {
 		std::cout << "FAILED\n";
 		exit(1);
