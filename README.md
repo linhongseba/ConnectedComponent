@@ -2,6 +2,7 @@
 A simple In-memory implementation for 
    - finding connected component in undirected graphs
    - rooted random walk starting from each node
+   - A fast approximate rooted ranom walk starting from each node
 
 # Table of Content
 - [Compile and Installation](#compile-and-installation)
@@ -24,14 +25,17 @@ A simple In-memory implementation for
       
    - To executate the random walk program, type:
    
-     [./randomwalk] [input-weighted-graph-file-name] [file-of-node-name] [output-file-name] [threshold]
+     [./randomwalk] [input-weighted-graph-file-name] [file-of-node-name] [file-phone-to-uri][output-file-name] [threshold]
      
       The format of input graph file, is specified as weighted graph in [Input Format](#input-format).
       
       As an example, we could type
-      ./randomwalk EG3.txt_new.txt name.txt toysim.txt 0.5
+      ./randomwalk EG3.txt_new.txt name.txt phone2url.txt toycluster-0.2.txt 0.2
       
-      For each node u, it will return the set of nodes that has hightest probability to reach from u. The graph is a weighted graph specified in [EG3.txt_new.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/EG3.txt_new.txt), and the outputs are saved in file [toysim.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/toysim.txt).
+      For each node u, it will return the set of nodes that has hightest probability to reach from u. The graph is a weighted graph specified in [EG3.txt_new.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/EG3.txt_new.txt), and the outputs are saved in file [toycluster-0.2.txt] (https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/example-graph-random-walk/toycluster-0.2.txt).
+      
+  - The executation of the fast random walk shares the same input parameter with random walk.
+  
 
 ## Input Format
 ### Unweighted Graph (For connected component)
@@ -117,10 +121,9 @@ An example of output is available [here](https://github.com/linhongseba/Connecte
 
 ### Random Walk
 Each line is formated as follows:
+{"cluster-id": "str", "centroid_phone": "str", "phones": [{"name": "str", "weight": double}..., {"name": "str", "weight": double}], "CDRIDs": [{"uri": "str", "weight": double}, ..., {"uri": "str", "weight": double}]}
 
-node_source:node1,weight1:node2,weight2:node3,weight3
-
-An example of output is available [here](https://github.com/linhongseba/ConnectedComponent/blob/master/Connected_Comp/example-graph-random-walk/toysim.txt)
+An example of output is available [here](https://github.com/linhongseba/ConnectedComponent/blob/master/Connected_Comp/example-graph-random-walk/toycluster-0.2.txt)
 
 ## Convert Input
 In many real case, the id for each node is a string, rather than an integer. Please look [here](https://github.com/linhongseba/MaximumClique/blob/master/README.md) 
