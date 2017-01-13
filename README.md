@@ -131,5 +131,28 @@ for a walkthrough example and related codes about how to convert the unweighted 
 
 For the weighted edge table format, please use the TSV2wstandard to convert into the required input format.
 
+In the HT domain, an example of converting Java script is in [here](https://github.com/linhongseba/ConnectedComponent/tree/master/Connected_Comp/pre-process/src/phonegraph)
+
+
+Usage: raw_json_file output_prefix_string k (integer)
+The input is the raw Json line file, while the outputs are three files:
+
+1) phone/email string to integer mapping file
+
+2) phone/email integer to CDR uri id mapping file
+
+3) phone/emmail co-occurrence graph in the weighted edge table format (i.e, source(integer)[\t]target(integer)[\t]weights
+
+## Walk Through Pipleline
+
+1) Run the pre-processing script (the Java code phonegraph) to obtain three files: phone_mapID.txt, phone2urlID.txt, phone_graphID.txt, where ID denotes the output_prefix_string given by the user
+
+2) Run the TSV2wstandard to convert the phone_graphID.txt in weighted edge table format to the required input format phone_graphID.txt_new.txt
+
+3) Run the randomwalk code using the outputs of 1) and 2)
+
+
+
+
 
     
