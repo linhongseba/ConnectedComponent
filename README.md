@@ -143,7 +143,7 @@ The input is the raw Json line file, while the outputs are three files:
 
 3) phone/emmail co-occurrence graph in the weighted edge table format (i.e, source(integer)[\t]target(integer)[\t]weights
 
-## Walk Through Pipleline
+## Walk Through Pipeline
 
 1) Run the pre-processing script (the Java code phonegraph) to obtain three files: phone_mapID.txt, phone2urlID.txt, phone_graphID.txt, where ID denotes the output_prefix_string given by the user
 
