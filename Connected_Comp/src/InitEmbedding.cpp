@@ -1,5 +1,5 @@
 #include"IOfunction.h"
-#include"Graphstat.cpp"
+#include"Graphstat.h"
 /*
 @author: Linhong Zhu (linhong.seba.zhu@gmail.com)
 @last_update_time: April 14, 2016
@@ -27,15 +27,18 @@ void printEmbeddingDeg(int i, int deg, int * mask, int length, int pos, FILE *wf
 	fprintf(wfile, "%d,%d", i, deg);
 	for (int j = 0; j < length; j++) {
 		if (mask[j] == 1) {
-			fprintf(wfile, ":%d,%lf", j + pos, 1.0/dv);
+			double weight = 1.0/deg;
+			fprintf(wfile, ":%d,%lf", j + pos, weight);
 		}
 	}
 	fprintf(wfile, "\n");
 }
 
-void printEmbeddingZero(int i, int pos, int ccindex, int ccsize, FILE *wfile) {
+void printEmbeddingZero(int i, int dim, int ccindex, int ccsize, FILE *wfile) {
 	fprintf(wfile, "%d,%d", i, 1);
-	fprintf(wfile, ":%d,%lf", ccindex % pos, 1.0/ccsize);
+	double weight = 1.0/(ccsize + 1);
+	int idx = ccindex%dim + (int)rand()%dim;
+	fprintf(wfile, ":%d,%lf", idx, weight);
 	fprintf(wfile, "\n");
 }
 
@@ -64,7 +67,7 @@ int main(int argc, char *argv[]){
     // compute the connected component (start) //
 	ccid = new int[n];
 	memset(ccid,0,sizeof(int)*n);
-	isvisited=new char[n];
+	isvisited = new char[n];
 	int ccnum = ConnectedComp(G, n);
 	printf("total number of connected component is %d\n",ccnum);
 	if(isvisited != NULL)
@@ -72,6 +75,7 @@ int main(int argc, char *argv[]){
 	if(visitstack != NULL)
 		free(visitstack);
 	int * ccsize = new int[ccnum + 1];
+	memset(ccsize, 0, sizeof(int) *(ccnum +1));
 	for(int i = 0;i < n; i++){
 		int ccindex = ccid[i];
 		ccsize[ccindex]++;
@@ -80,9 +84,10 @@ int main(int argc, char *argv[]){
 
 
 	// Initilize the embedding and save to file (start)
-	int dim = atoi(argv[2])
+	int dim = atoi(argv[2]);
 	int length = dim / 2 ;
 	int *mask = new int[length];
+	memset(mask, 0, sizeof(int)*length);
 	FILE *wfile = fopen(argv[3],"w");
 	if(wfile == NULL){
 		printf("could not open file to write\n");
@@ -90,7 +95,7 @@ int main(int argc, char *argv[]){
 	}
 	fprintf(wfile, "%d\n", n);
 	for(int i = 0; i < n; i++) {
-		int hash = ccid[i];
+		unsigned int hash = (unsigned int)ccid[i];
 		int pos = 0;
 		if (ccsize[hash] > 500) {
 			hash += rand()%dim;
@@ -100,8 +105,9 @@ int main(int argc, char *argv[]){
 		if (deg > 0) {
 			printEmbeddingDeg(i, deg, mask, length, pos, wfile);
 		} else {
-			printEmbeddingZero(i, pos, ccindex, ccsize, wfile);
+			printEmbeddingZero(i, dim, ccid[i], ccsize[ccid[i]], wfile);
 		}
+		memset(mask, 0, sizeof(int)*length);
 	}
 	if(wfile != NULL) {
 		fclose(wfile);
